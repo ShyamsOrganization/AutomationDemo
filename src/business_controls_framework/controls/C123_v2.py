@@ -14,7 +14,16 @@ from ..assertion_engine.base_assertion import BaseAssertion
 
 
 class C123ControlV2(BaseControlV2):
-    """Control for checking employee bonuses using the new architecture."""
+    """
+    Control for checking employee bonuses using the new architecture.
+    
+    This control uses the MaxPercentageAssertion to verify that employee
+    bonuses do not exceed 20% of their salary. The control requires
+    employee data with 'salary' and 'bonus' fields.
+    
+    Input data: Employee data (CSV file with salary and bonus columns)
+    Assertion: MaxPercentageAssertion
+    """
     
     def __init__(self, data_file: str, control_id: Optional[str] = None, description: Optional[str] = None):
         """

@@ -14,7 +14,16 @@ from ..assertion_engine.base_assertion import BaseAssertion
 
 
 class C456Control(BaseControlV2):
-    """Control for checking interest rates."""
+    """
+    Control for checking interest rates.
+    
+    This control uses the RangeAssertion to verify that loan interest rates
+    are within the acceptable range of 2% to 15%. The control requires
+    loan data with an 'interest_rate' field.
+    
+    Input data: Loan data (CSV file with interest_rate column)
+    Assertion: RangeAssertion
+    """
     
     def __init__(self, data_file: str, control_id: Optional[str] = None, description: Optional[str] = None):
         """
