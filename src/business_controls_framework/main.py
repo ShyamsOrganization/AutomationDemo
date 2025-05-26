@@ -10,6 +10,7 @@ from typing import Dict, Any, List
 
 from .api.control_api import ControlAPI
 from .controls.C123 import C123Control
+from .controls.C123_large import C123LargeControl
 
 
 def main() -> None:
@@ -23,6 +24,7 @@ def main() -> None:
     api = ControlAPI()
     
     api.register_control(C123Control(os.path.join(args.data_dir, "employees.csv")))
+    api.register_control(C123LargeControl(os.path.join(args.data_dir, "employees_large.csv")))
     
     if args.control:
         results = [api.run_control(args.control)]
