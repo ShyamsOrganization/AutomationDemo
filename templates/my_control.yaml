@@ -1,0 +1,18 @@
+control_id: "C789"  # Required: Unique identifier for the control
+description: "Check customer credit scores are within acceptable range"  # Required: Description of what this control verifies
+
+assertion:
+  type: "range"  # Options: range, max_percentage, threshold, custom
+  field: "credit_score"  # The field to check in your data
+  min_value: 300  # Minimum allowed value
+  max_value: 850  # Maximum allowed value
+  
+  
+
+data_file: "customer_credit.csv"  # Required: Name of the CSV file with data to check
+sample_data: |
+  customer_id,customer_name,credit_score
+  C001,John Smith,720
+  C002,Jane Doe,450
+  C003,Bob Johnson,290
+  C004,Alice Williams,860
