@@ -66,9 +66,9 @@ def main() -> None:
     ))
     
     api.register_control(C789Control(
-        data_file=os.path.join(c789_data_dir, "sample.csv"),
+        data_file=os.path.join(c789_data_dir, "customer_credit.csv"),
         control_id="C789",
-        description="Check customer credit limits"
+        description="Check customer credit scores are within acceptable range"
     ))
     
     if args.discover:
