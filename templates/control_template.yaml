@@ -1,0 +1,18 @@
+
+control_id: "C999"  # Required: Unique identifier for the control (e.g., C789)
+description: "Check customer account balances"  # Required: Description of what this control verifies
+
+assertion:
+  type: "range"  # Options: range, max_percentage, threshold, custom
+  field: "account_balance"  # The field to check in your data
+  min_value: 0  # Minimum allowed value
+  max_value: 1000000  # Maximum allowed value
+  
+  
+
+data_file: "account_balances.csv"  # Required: Name of the CSV file with data to check
+sample_data: |
+  account_id,customer_name,account_balance
+  A001,John Smith,5000
+  A002,Jane Doe,750000
+  A003,Bob Johnson,1200000
