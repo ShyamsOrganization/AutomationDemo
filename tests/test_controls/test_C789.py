@@ -17,10 +17,7 @@ class TestC789Control(unittest.TestCase):
     def test_passing_case(self):
         """Test a case where the control should pass."""
         with NamedTemporaryFile(mode='w', delete=False) as f:
-            f.write("id,value\n")
-            f.write("1,50\n")
-            f.write("2,75\n")
-            f.write("3,90\n")
+            f.write("id,credit_score\n1,301\n2,849\n")
             temp_file = f.name
         
         try:
@@ -35,10 +32,7 @@ class TestC789Control(unittest.TestCase):
     def test_failing_case(self):
         """Test a case where the control should fail."""
         with NamedTemporaryFile(mode='w', delete=False) as f:
-            f.write("id,value\n")
-            f.write("1,50\n")
-            f.write("2,150\n")  # Exceeds threshold
-            f.write("3,90\n")
+            f.write("id,credit_score\n1,299\n2,851\n")
             temp_file = f.name
         
         try:
