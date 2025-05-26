@@ -6,12 +6,32 @@ This module provides the main entry point for running the framework with the new
 import os
 import argparse
 import json
+import importlib
+import pkgutil
 from typing import Dict, Any, List
 
 from .api.control_api import ControlAPI
 from .controls.C123.control import C123Control
 from .controls.C123.control_v2 import C123ControlV2
 from .controls.C456.control import C456Control
+from .controls.C789.control import C789Control
+
+
+def discover_controls():
+    """
+    Automatically discover all control modules in the controls directory.
+    
+    Returns:
+        List of control module names
+    """
+    controls_pkg = importlib.import_module("src.business_controls_framework.controls")
+    control_modules = []
+    
+    for _, name, is_pkg in pkgutil.iter_modules(controls_pkg.__path__):
+        if is_pkg and name.startswith("C"):
+            control_modules.append(name)
+            
+    return control_modules
 
 
 def main() -> None:
@@ -20,12 +40,14 @@ def main() -> None:
     parser.add_argument("--control", help="ID of the control to run")
     parser.add_argument("--data-dir", default="./tests/data", help="Directory containing data files")
     parser.add_argument("--output", help="Output file for results (JSON format)")
+    parser.add_argument("--discover", action="store_true", help="Automatically discover and register all controls")
     args = parser.parse_args()
     
     api = ControlAPI()
     
     c123_data_dir = os.path.join(os.path.dirname(__file__), "controls", "C123", "data")
     c456_data_dir = os.path.join(os.path.dirname(__file__), "controls", "C456", "data")
+    c789_data_dir = os.path.join(os.path.dirname(__file__), "controls", "C789", "data")
     
     api.register_control(C123Control(
         data_file=os.path.join(c123_data_dir, "employees.csv")
@@ -42,6 +64,16 @@ def main() -> None:
         control_id="C456",
         description="Check that interest rates are within the allowed range (2% to 15%)"
     ))
+    
+    api.register_control(C789Control(
+        data_file=os.path.join(c789_data_dir, "sample.csv"),
+        control_id="C789",
+        description="Check customer credit limits"
+    ))
+    
+    if args.discover:
+        control_modules = discover_controls()
+        print(f"Discovered control modules: {control_modules}")
     
     if args.control:
         results = [api.run_control(args.control)]

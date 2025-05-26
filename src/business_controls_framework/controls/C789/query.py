@@ -1,15 +1,15 @@
 """
-Simple Query
+Simple Query for C789
 
-This module provides a simple query implementation.
+This module provides a simple query implementation for the C789 control.
 """
 from typing import Dict, Any
 
-from .base_query import BaseQuery
+from ...query_engine.base_query import BaseQuery
 
 
 class SimpleQuery(BaseQuery):
-    """Simple query implementation."""
+    """Simple query implementation for C789 control."""
     
     def __init__(self, connector, query_string="all"):
         """
