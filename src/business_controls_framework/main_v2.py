@@ -9,9 +9,9 @@ import json
 from typing import Dict, Any, List
 
 from .api.control_api import ControlAPI
-from .controls.C123 import C123Control
-from .controls.C123_v2 import C123ControlV2
-from .controls.C456 import C456Control
+from .controls.C123.control import C123Control
+from .controls.C123.control_v2 import C123ControlV2
+from .controls.C456.control import C456Control
 
 
 def main() -> None:
@@ -24,18 +24,21 @@ def main() -> None:
     
     api = ControlAPI()
     
+    c123_data_dir = os.path.join(os.path.dirname(__file__), "controls", "C123", "data")
+    c456_data_dir = os.path.join(os.path.dirname(__file__), "controls", "C456", "data")
+    
     api.register_control(C123Control(
-        data_file=os.path.join(args.data_dir, "employees.csv")
+        data_file=os.path.join(c123_data_dir, "employees.csv")
     ))
     
     api.register_control(C123ControlV2(
-        data_file=os.path.join(args.data_dir, "employees.csv"),
+        data_file=os.path.join(c123_data_dir, "employees.csv"),
         control_id="C123_V2",
         description="Check that employee bonuses are not more than 20% of salary (new architecture)"
     ))
     
     api.register_control(C456Control(
-        data_file=os.path.join(args.data_dir, "employees.csv"),  # Using same file for demo
+        data_file=os.path.join(c456_data_dir, "loans.csv"),
         control_id="C456",
         description="Check that interest rates are within the allowed range (2% to 15%)"
     ))

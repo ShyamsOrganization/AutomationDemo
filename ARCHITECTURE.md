@@ -4,7 +4,40 @@
 
 The Business Controls Framework is designed to automate the testing of business controls. The framework allows for defining controls that query data sources and apply assertions to verify that the data meets specific criteria.
 
-## Architecture
+## Directory Structure
+
+The framework is organized by control, with each control having its own directory containing all related files:
+
+```
+src/business_controls_framework/
+├── api/                      # API components
+├── controls/                 # Controls directory
+│   ├── C123/                 # C123 control directory
+│   │   ├── __init__.py       # Package initialization
+│   │   ├── control.py        # C123 control implementation
+│   │   ├── control_v2.py     # C123 V2 control implementation
+│   │   ├── assertion.py      # MaxPercentageAssertion for C123
+│   │   ├── query.py          # SimpleQuery for C123
+│   │   └── data/             # C123-specific data files
+│   │       ├── employees.csv
+│   │       └── employees_large.csv
+│   ├── C456/                 # C456 control directory
+│   │   ├── __init__.py       # Package initialization
+│   │   ├── control.py        # C456 control implementation
+│   │   ├── assertion.py      # RangeAssertion for C456
+│   │   ├── query.py          # SimpleQuery for C456
+│   │   └── data/             # C456-specific data files
+│   │       └── loans.csv
+│   ├── base_control.py       # Base class for original controls
+│   └── base_control_v2.py    # Base class for new controls
+├── data_connectors/          # Data connector components
+├── query_engine/             # Shared query engine components
+├── assertion_engine/         # Shared assertion engine components
+├── main.py                   # Main entry point (original architecture)
+└── main_v2.py                # Main entry point (new architecture)
+```
+
+## Architecture Components
 
 The framework is built around the following key components:
 
@@ -21,15 +54,14 @@ Data connectors provide a standardized interface for accessing different types o
 The query engine provides functionality for building and executing queries against data sources:
 
 - `BaseQuery`: Abstract base class for all queries
-- `SimpleQuery`: A simple query implementation that passes a query string to a connector
+- Each control has its own query implementation in its directory
 
 ### Assertion Engine
 
 The assertion engine provides functionality for evaluating assertions against data:
 
 - `BaseAssertion`: Abstract base class for all assertions
-- `MaxPercentageAssertion`: Assertion for checking that one value is not more than a percentage of another value
-- `RangeAssertion`: Assertion for checking that values are within a specified range
+- Each control has its own assertion implementation in its directory
 
 ### Controls
 
@@ -37,9 +69,7 @@ Controls combine queries and assertions to verify that data meets specific crite
 
 - `BaseControl`: Original base class for all controls (using the centralized assertion registry)
 - `BaseControlV2`: Enhanced base class for all controls with custom assertions
-- `C123Control`: Control for checking employee bonuses (using the original architecture)
-- `C123ControlV2`: Control for checking employee bonuses (using the new architecture)
-- `C456Control`: Control for checking interest rates (using the new architecture)
+- Each control has its own directory with implementation files
 
 ### API
 
@@ -60,10 +90,12 @@ Each control is associated with specific assertion types based on its business r
 
 To maintain clarity and consistency, the following naming conventions are recommended:
 
-1. **Control Classes**: `[ControlID]Control` (e.g., `C123Control`, `C456Control`)
-2. **Assertion Classes**: `[PurposeDescription]Assertion` (e.g., `MaxPercentageAssertion`, `RangeAssertion`)
-3. **Test Classes**: `Test[ControlID]` (e.g., `TestC123`, `TestC456`)
-4. **Data Files**: Descriptive names indicating the data domain (e.g., `employees.csv`, `loans.csv`)
+1. **Control Directories**: `[ControlID]` (e.g., `C123`, `C456`)
+2. **Control Implementation**: `control.py` in the control's directory
+3. **Assertion Implementation**: `assertion.py` in the control's directory
+4. **Query Implementation**: `query.py` in the control's directory
+5. **Test Classes**: `Test[ControlID]` (e.g., `TestC123`, `TestC456`)
+6. **Data Files**: Stored in the `data/` subdirectory of each control
 
 ### Documentation Requirements
 
@@ -100,18 +132,45 @@ The new architecture also introduces a similar pattern for queries, allowing con
 Control -> Custom Query Implementation -> Data Connector
 ```
 
+### Control-Specific Organization
+
+The latest evolution organizes all files related to a control in its own directory:
+
+```
+Control Directory/
+├── control.py        # Control implementation
+├── assertion.py      # Assertion implementation
+├── query.py          # Query implementation
+└── data/             # Control-specific data files
+```
+
+This organization makes it easier to manage thousands of controls, as each control's components are grouped together.
+
 ## Adding New Controls
 
 To add a new control with its own query and assertion logic:
 
-1. Create a new control class extending `BaseControlV2`
-2. Implement `create_query()` to return the appropriate query for this control
-3. Implement `create_assertion()` to return the appropriate assertion for this control
-4. Implement `get_assertion_params()` to provide the parameters for the assertion
-5. Document the control-assertion relationship in the class docstring
+1. Create a new directory under `controls/` with the control ID (e.g., `C789`)
+2. Create the following files in the new directory:
+   - `__init__.py`: Package initialization
+   - `control.py`: Control implementation extending `BaseControlV2`
+   - `assertion.py`: Custom assertion implementation
+   - `query.py`: Custom query implementation
+   - `data/`: Directory for control-specific data files
+3. Implement the control class with the required methods:
+   - `create_query()`: Returns the appropriate query for this control
+   - `create_assertion()`: Returns the appropriate assertion for this control
+   - `get_assertion_params()`: Provides the parameters for the assertion
+4. Document the control-assertion relationship in the class docstring
 
 Example:
 ```python
+# controls/C789/control.py
+from ...controls.base_control_v2 import BaseControlV2
+from ...data_connectors.csv_connector import CSVConnector
+from .query import SimpleQuery
+from .assertion import RangeAssertion
+
 class C789Control(BaseControlV2):
     """
     Control for checking customer credit limits.
@@ -120,6 +179,10 @@ class C789Control(BaseControlV2):
     credit limits are appropriate based on their credit score.
     """
     
+    def create_query(self):
+        connector = CSVConnector(self.data_file)
+        return SimpleQuery(connector)
+        
     def create_assertion(self):
         return RangeAssertion()
         
@@ -133,4 +196,4 @@ class C789Control(BaseControlV2):
 
 ## Backward Compatibility
 
-The framework maintains backward compatibility with the original architecture, allowing existing controls to continue working without modification. New controls can take advantage of the more flexible architecture.
+The framework maintains backward compatibility with the original architecture, allowing existing controls to continue working without modification. New controls can take advantage of the more flexible architecture and control-specific organization.

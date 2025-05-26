@@ -8,7 +8,7 @@ from tempfile import NamedTemporaryFile
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
-from src.business_controls_framework.controls.C123 import C123Control
+from src.business_controls_framework.controls.C123.control import C123Control
 
 
 class TestC123Control(unittest.TestCase):

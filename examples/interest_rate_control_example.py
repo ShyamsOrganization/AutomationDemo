@@ -8,7 +8,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from src.business_controls_framework.controls.C456 import C456Control
+from src.business_controls_framework.controls.C456.control import C456Control
 
 data_file = os.path.abspath(os.path.join(os.path.dirname(__file__), 
                                          '..', 'tests', 'data', 'loans.csv'))
