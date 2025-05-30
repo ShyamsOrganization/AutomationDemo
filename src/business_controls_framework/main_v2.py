@@ -17,6 +17,7 @@ from .controls.C123.sql_control import C123SQLControl
 from .controls.C456.control import C456Control
 from .controls.C789.control import C789Control
 from .controls.C999.control import C999Control
+from .controls.C5643.control import C5643Control
 
 
 def discover_controls():
@@ -51,6 +52,7 @@ def main() -> None:
     c456_data_dir = os.path.join(os.path.dirname(__file__), "controls", "C456", "data")
     c789_data_dir = os.path.join(os.path.dirname(__file__), "controls", "C789", "data")
     c999_data_dir = os.path.join(os.path.dirname(__file__), "controls", "C999", "data")
+    c5643_data_dir = os.path.join(os.path.dirname(__file__), "controls", "C5643", "data")
     
     api.register_control(C123SQLControl(
         data_file=os.path.join(c123_data_dir, "employees.db"),
@@ -86,6 +88,12 @@ def main() -> None:
         data_file=os.path.join(c999_data_dir, "accounts.db"),
         control_id="C999",
         description="Check customer account balances are within acceptable limits"
+    ))
+    
+    api.register_control(C5643Control(
+        data_file=os.path.join(c123_data_dir, "employees.db"),
+        control_id="C5643",
+        description="Check that no employee has a salary exceeding 100k USD"
     ))
     
     if args.discover:
