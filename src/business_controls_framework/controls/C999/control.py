@@ -1,27 +1,28 @@
 """
 C999 Control Implementation
 
-Check customer account balances
+Check customer account balances are within acceptable limits
 """
 from ...controls.base_control_v2 import BaseControlV2
-from ...data_connectors.csv_connector import CSVConnector
-from .query import SimpleQuery
+from ...data_connectors.enhanced_sql_connector import EnhancedSQLConnector
+from .query import SQLQuery
 from .assertion import RangeAssertion
 
 
 class C999Control(BaseControlV2):
     """
-    Check customer account balances
+    Check customer account balances are within acceptable limits
     
-    This control uses the RangeAssertion to verify data meets specific criteria.
+    This control uses SQLite database and the RangeAssertion to verify
+    that account balances are within acceptable limits.
     """
     
-    def __init__(self, data_file, control_id="C999", description="Check customer account balances"):
+    def __init__(self, data_file, control_id="C999", description="Check customer account balances are within acceptable limits"):
         """
         Initialize the control.
         
         Args:
-            data_file: Path to the data file
+            data_file: Path to the SQLite database file
             control_id: ID of the control
             description: Description of the control
         """
@@ -35,8 +36,8 @@ class C999Control(BaseControlV2):
         Returns:
             Query object
         """
-        connector = CSVConnector(self.data_file)
-        return SimpleQuery(connector)
+        connector = EnhancedSQLConnector(self.data_file)
+        return SQLQuery(connector)
     
     def create_assertion(self):
         """
