@@ -18,6 +18,7 @@ from .controls.C456.control import C456Control
 from .controls.C789.control import C789Control
 from .controls.C999.control import C999Control
 from .controls.C5643.control import C5643Control
+from .controls.C7890.control import C7890Control
 
 
 def discover_controls():
@@ -94,6 +95,12 @@ def main() -> None:
         data_file=os.path.join(c123_data_dir, "employees.db"),
         control_id="C5643",
         description="Check that no employee has a salary exceeding 100k USD"
+    ))
+    
+    api.register_control(C7890Control(
+        data_file=os.path.join(c123_data_dir, "employees.db"),
+        control_id="C7890",
+        description="Check that no employee has a bonus exceeding 30% of salary"
     ))
     
     if args.discover:
