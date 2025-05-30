@@ -13,6 +13,7 @@ from typing import Dict, Any, List
 from .api.control_api import ControlAPI
 from .controls.C123.control import C123Control
 from .controls.C123.control_v2 import C123ControlV2
+from .controls.C123.sql_control import C123SQLControl
 from .controls.C456.control import C456Control
 from .controls.C789.control import C789Control
 from .controls.C999.control import C999Control
@@ -51,8 +52,16 @@ def main() -> None:
     c789_data_dir = os.path.join(os.path.dirname(__file__), "controls", "C789", "data")
     c999_data_dir = os.path.join(os.path.dirname(__file__), "controls", "C999", "data")
     
+    api.register_control(C123SQLControl(
+        data_file=os.path.join(c123_data_dir, "employees.db"),
+        control_id="C123",
+        description="Check that employee bonuses are not more than 20% of salary (SQLite version)"
+    ))
+    
     api.register_control(C123Control(
-        data_file=os.path.join(c123_data_dir, "employees.csv")
+        data_file=os.path.join(c123_data_dir, "employees.csv"),
+        control_id="C123_CSV",
+        description="Check that employee bonuses are not more than 20% of salary (CSV version)"
     ))
     
     api.register_control(C123ControlV2(
